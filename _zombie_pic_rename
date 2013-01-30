@@ -1,0 +1,51 @@
+#! /usr/bin/perl
+
+$zombieName = "s-zombie1";
+
+@files = `ls`;
+
+foreach(@files)
+{
+	chomp($_);
+	@names = split /\./;
+	
+	if (lc($names[-1]) eq "png")
+	{
+		print "File name = $_\n";
+		$targetPicName = GetZombiePicName($zombieName, $_) . ".png";
+		print "Target name = $targetPicName\n";
+		
+		rename $_, $targetPicName;
+	}
+}
+
+
+# 参数1：僵尸名称
+# 参数2：图片名称
+# 返回值：转换后的图片名称
+sub GetZombiePicName
+{
+	my($zombieName, $picName) = @_;
+	
+	$_ = $picName;
+	
+	%zombiePartHash = 
+	(
+		"头", "head",
+		"身", "body",
+		"右手", "arm-right",
+		"左手", "arm-left",
+		"右脚", "leg-right",
+		"左脚", "leg-left",
+	);
+
+	while (($key, $value) = each %zombiePartHash)
+	{
+		if (/$key/)
+		{
+			return $zombieName . "-" . $value;
+		}
+	}
+	
+	return $zombieName;
+}

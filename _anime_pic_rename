@@ -1,0 +1,40 @@
+#! /usr/bin/perl
+
+$zombieName = "l-zombie1";
+
+@files = `ls`;
+
+foreach(@files)
+{
+	chomp($_);
+	@names = split /\./;
+	
+	if (lc($names[-1]) eq "png")
+	{
+		print "File name = $_\n";
+		$targetPicName = GetAnimePicName($zombieName, $_);
+		print "Target name = $targetPicName\n";
+		
+		rename $_, $targetPicName;
+	}
+}
+
+
+# 参数1：僵尸名称
+# 参数2：图片名称
+# 返回值：转换后的图片名称
+sub GetAnimePicName
+{
+	my($zombieName, $picName) = @_;
+	
+	$_ = $picName;
+	
+	$picIndexName = substr($picName, length($picName) - 6);
+	
+	if (substr($picIndexName, 0, 1) eq "0")
+	{
+		$picIndexName = substr($picIndexName, 1);
+	}
+	
+	return $zombieName . "_" . $picIndexName;
+}
